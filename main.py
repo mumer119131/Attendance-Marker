@@ -45,50 +45,53 @@ agList=["2019-ag-6051",
 "2019-ag-6089",
 "2019-ag-6090",
 "2019-ag-6091"]
-currentDate=date.today()
-currentTime=time.localtime()
-current_time = time.strftime("%H-%M-%S", currentTime)
-username = getpass.getuser()
-with open("C:/Users/"+username+"/Desktop/"+str(currentDate)+"_"+str(current_time)+".xlsx","w"):
-    pass
-
-wb = openpyxl.load_workbook("C:/Users/"+username+"/Desktop/"+str(currentDate)+"_"+str(current_time)+".xlsx")
-ws=wb.active
-
 dataFromFile=[]
 chatListDir=''
+fileName=''
+sg.theme("Dark Blue 3")
+layout = [[sg.Text("Enter the File Name "),sg.InputText()],
+          [sg.T("")], [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")],
+           ]
 
-
-sg.theme("DarkTeal2")
-layout = [[sg.T("")], [sg.Text("Choose a file: "), sg.Input(), sg.FileBrowse(key="-IN-")],[sg.Button("Submit")]]
-
-###Building Window
-window = sg.Window('My File Browser', layout, size=(600,150))
+window = sg.Window('Attendance Checker', layout, size=(600,150))
     
 while True:
     event, values = window.read()
     if event == sg.WIN_CLOSED or event=="Exit":
         break
     elif event == "Submit":
+        fileName=values[0]
         chatListDir=values["-IN-"]
         break
 
-n=1
+currentDate=date.today()
+currentTime=time.localtime()
+current_time = time.strftime("%H-%M-%S", currentTime)
+username = getpass.getuser()
+with open("C:/Users/"+username+"/Desktop/"+fileName+".xlsx","w"):
+    pass
+
 with open (chatListDir) as f:
      dataFromFile=np.loadtxt(f,dtype=str,delimiter="\n").tolist()
-# for i in agList:
+print("path"+"C:/Users/"+username+"/Desktop/"+str(currentDate)+"_"+str(current_time))
+wb = openpyxl.load_workbook('C:/Users/'+username+'/Desktop/'+fileName+'.xlsx')
+ws=wb.active
+n=1
+for i in agList:
     
-#     ws["A"+str(n)]=i
-#     n+=1
-print(ws["A1"].value)
+     ws["A"+str(n)]=i
+     n+=1
+
+
+
+
 for i in range(1,40):
     for j in dataFromFile:
-           
-             if(ws['A'+str(i)].value==j):
-                 ws['B'+str(i)]="P"
-                 break
-             else:
-                 ws['B'+str(i)]="A"
+        if(ws['A'+str(i)].value==j):
+             ws['B'+str(i)]="P"
+             break
+        else:
+             ws['B'+str(i)]="A"
                      
 wb.save('C:/Users/Muhammad Umer/Desktop/pytry.xlsx')
 
